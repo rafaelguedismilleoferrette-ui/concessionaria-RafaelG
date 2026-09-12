@@ -1,0 +1,189 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Formulário de Cadastro de Cliente</mat-card-title>
+      <mat-card-subtitle
+        >O seguinte cadastro será utilizado em Vendas e Ordens de Serviço</mat-card-subtitle
+      >
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="formularioCliente" (ngSubmit)="salvarCliente()">
+        <div class="linha dados-cliente">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="nome">
+            <mat-label>Nome:</mat-label>
+            <input
+              matInput
+              id="nome"
+              formControlName="nome"
+              autocomplete="off"
+              maxlength="50"
+              required
+            />
+            <mat-error>{{ erroCampo('nome') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>Tipo de Pessoa:</mat-label>
+            <mat-select
+              id="tipoPessoa"
+              formControlName="tipoPessoa"
+              (selectionChange)="trocarTipoPessoa()"
+              required
+            >
+              <mat-option value="PF">Pessoa Física</mat-option>
+              <mat-option value="PJ">Pessoa Jurídica</mat-option>
+            </mat-select>
+            <mat-error>{{ erroCampo('tipoPessoa') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ pessoaJuridica ? 'CNPJ:' : 'CPF:' }}</mat-label>
+            <input
+              matInput
+              id="cpfCnpj"
+              formControlName="cpfCnpj"
+              inputmode="numeric"
+              autocomplete="off"
+              (input)="aplicarMascara('cpfCnpj', $event)"
+              [maxlength]="pessoaJuridica ? 18 : 14"
+              required
+            />
+            <mat-error>{{ erroCampo('cpfCnpj') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Telefone:</mat-label>
+            <input
+              matInput
+              id="telefone"
+              formControlName="telefone"
+              type="tel"
+              (input)="aplicarMascara('telefone', $event)"
+              maxlength="15"
+              required
+            />
+            <mat-error>{{ erroCampo('telefone') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>CEP:</mat-label>
+            <input
+              matInput
+              id="cep"
+              formControlName="cep"
+              inputmode="numeric"
+              (input)="aplicarMascara('cep', $event)"
+              maxlength="9"
+              required
+            />
+            <mat-error>{{ erroCampo('cep') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="linha endereco">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cidade">
+            <mat-label>Cidade:</mat-label>
+            <input
+              matInput
+              id="cidade"
+              formControlName="cidade"
+              autocomplete="off"
+              maxlength="80"
+              required
+            />
+            <mat-error>{{ erroCampo('cidade') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="uf">
+            <mat-label>UF:</mat-label>
+            <input
+              matInput
+              id="uf"
+              formControlName="uf"
+              autocomplete="off"
+              (input)="formatarUf($event)"
+              maxlength="2"
+              required
+            />
+            <mat-error>{{ erroCampo('uf') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="logradouro">
+            <mat-label>Endereço:</mat-label>
+            <input
+              matInput
+              id="endereco"
+              formControlName="logradouro"
+              autocomplete="off"
+              maxlength="120"
+              required
+            />
+            <mat-error>{{ erroCampo('logradouro') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="bairro">
+            <mat-label>Bairro:</mat-label>
+            <input
+              matInput
+              id="bairro"
+              formControlName="bairro"
+              autocomplete="off"
+              maxlength="80"
+              required
+            />
+            <mat-error>{{ erroCampo('bairro') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="numero">
+            <mat-label>Numero:</mat-label>
+            <input
+              matInput
+              id="numero"
+              formControlName="numero"
+              autocomplete="off"
+              maxlength="15"
+              required
+            />
+            <mat-error>{{ erroCampo('numero') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="email">
+            <mat-label>Email:</mat-label>
+            <input
+              matInput
+              id="email"
+              formControlName="email"
+              type="email"
+              maxlength="120"
+              required
+            />
+            <mat-error>{{ erroCampo('email') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="linha acoes">
+          <button mat-flat-button type="submit" class="salvar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z" />
+              <path d="M17 21v-8H7v8M7 3v5h8" />
+            </svg>
+            Salvar
+          </button>
+          <button mat-flat-button type="button" class="cancelar" (click)="cancelar()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
+            Cancelar
+          </button>
+        </div>
+
+        @if (mensagemValidacao) {
+          <p class="mensagem" [class.erro]="erro" [attr.role]="erro ? 'alert' : 'status'">
+            {{ mensagemValidacao }}
+          </p>
+        }
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
